@@ -5,7 +5,7 @@ import src.generate
 import src.html2pdf_selenium
 import src.mergePdf
 import tkinter as tk
-from tkinter import ttk, scrolledtext
+from tkinter import ttk, scrolledtext, messagebox
 
 class App:
     def __init__(self, root):
@@ -15,7 +15,7 @@ class App:
         # 创建主框架
         main_frame = ttk.Frame(root, padding="10")
         main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
-        
+
         # 卡面ID输入
         ttk.Label(main_frame, text="卡面编号:").grid(row=0, column=0, sticky=tk.W)
         self.card_id = ttk.Entry(main_frame)
@@ -26,7 +26,7 @@ class App:
         self.training_status = tk.StringVar(value="normal")
         ttk.Radiobutton(main_frame, text="特训前", variable=self.training_status, 
                        value="normal").grid(row=1, column=1, sticky=tk.W)
-        ttk.Radiobutton(main_frame, text="特训后", variable=self.training_status, 
+        ttk.Radiobutton(main_frame, text="特训后", variable=self.training_status,
                        value="trained").grid(row=1, column=2, sticky=tk.W)
         
         # 生成按钮
@@ -44,6 +44,10 @@ class App:
 
     def generate(self):
         try:
+            # 禁用生成按钮
+            self.generate_button["state"] = "disabled"
+            self.root.update()
+
             card_id = int(self.card_id.get())
             after_training = self.training_status.get() == "trained"
             
@@ -77,9 +81,17 @@ class App:
             if os.path.exists("cache"):
                 shutil.rmtree("cache")
                 self.log("临时文件已清理")
+
+            messagebox.showinfo("完成", f"明信片已生成完成!\n保存位置: {output_filename}")
                 
         except Exception as e:
             self.log(f"生成明信片出错: {str(e)}")
+            messagebox.showerror("错误", f"生成过程中发生错误:\n{str(e)}")
+
+        finally:
+            # 重新启用生成按钮
+            self.generate_button["state"] = "normal"
+            self.root.update()
 
 def main():
     root = tk.Tk()
