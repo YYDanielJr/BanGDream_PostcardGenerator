@@ -24,14 +24,14 @@ class App:
         # 特训状态选择
         ttk.Label(main_frame, text="特训状态:").grid(row=1, column=0, sticky=tk.W)
         self.training_status = tk.StringVar(value="normal")
-        ttk.Radiobutton(main_frame, text="特训前", variable=self.training_status, 
+        ttk.Radiobutton(main_frame, text="特训前", variable=self.training_status,
                        value="normal").grid(row=1, column=1, sticky=tk.W)
         ttk.Radiobutton(main_frame, text="特训后", variable=self.training_status,
                        value="trained").grid(row=1, column=2, sticky=tk.W)
         
         # 生成按钮
-        ttk.Button(main_frame, text="开始生成", command=self.generate).grid(row=2, column=0, 
-                                                                      columnspan=3, pady=10)
+        self.generate_button = ttk.Button(main_frame, text="开始生成", command=self.generate)
+        self.generate_button.grid(row=2, column=0, columnspan=3, pady=10)
         
         # 日志显示区域
         self.log_area = scrolledtext.ScrolledText(main_frame, height=10, width=50)
